@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../static/bootstrap/bootstrap.4.6.min.css">
+    <link rel="stylesheet" href="../static/css/init.css">
+    <link rel="stylesheet" href="../static/css/index.css">
+    <title>demo 发布问答</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">问答DEMO</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/">首页 <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/qa/public">发布问答</a>
+                    </li>
+
+                    <li class="nav-item ml-2">
+                        <form class="form-inline my-2 my-lg-0" method="GET" action="/search">
+                            <input class="form-control mr-sm-2" type="search" placeholder="关键字" aria-label="Search" name="q">
+                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">搜索</button>
+                        </form>
+                    </li>
+
+                </ul>
+                <ul class="navbar-nav">
+                    {% if user %}
+                        <li class="nav-item">
+                            <span class="nav-link">欢迎！{{ user.username }}</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/auth/logout">退出登录</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/auth/login">登录</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/auth/login">注册</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row" style="margin-top: 20px;">
+            <div class="col"></div>
+            <div class="col-10">
+                <ul class="question-ul">
+                    {% for question in questions %}
+                    <li>
+                        <div class="side-question">
+                            <img class="side-question-avatar" src="./static/images/avatar.jpg" alt="">
+                        </div>
+                        <div class="question-main">
+                            <div class="question-title"><a href="/qa/detail/{{ question.id }}">{{ question.title }}</a></div>
+                            <div class="question-content">{{ question.content }}</div>
+                            <div class="question-detail">
+                                <span class="question-author">{{ question.author.username }}</span>
+                                <span class="question-time">{{ question.create_time }}</span>
+                            </div>
+                        </div>
+                        {% if g.user.id == question.author.id %}
+                            <form action="/qa/q/delete" method="post">
+                                <div class="form-group" style="text-align: right;">
+                                <input type="hidden" name="user_id" value="{{ question.author.id }}">
+                                <input type="hidden" name="question_id" value="{{ question.id }}">
+                                <button class="btn btn-primary">删除</button>
+                                </div>
+                            </form>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+</body>
+
+</html>
